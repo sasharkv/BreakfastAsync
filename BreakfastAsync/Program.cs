@@ -11,21 +11,42 @@ namespace BreakfastAsync // Note: actual namespace depends on the project name.
     {
         static void Main(string[] args)
         {
-            // these 3 methods will be executed simultaneously
-            FryEggs();
-            CookBacon();
-            ToastBread();
+
+            // If we want to change the execution order to, for example:
+            // FryEggs first, then
+            // CookBacon and ToastBread at the same time,
+            // we'll need to:
+            // FIRST: give a return type to FryEggs() of Task<bool>
+            // SECOND: create a var for holding the result of FryEggs, call and await it from another sync method
+
+            AnotherAsyncMethod(); // we use this as an "inbetween" because main isn't async
+
+
             Console.ReadLine(); // this is just to keep console from closing
         }
 
-        private static async void FryEggs()
+        public static async void AnotherAsyncMethod()
         {
-            // put the method calls that you need inside an anonymous function that you pass in the Run() method of Task
+            // this method will execute 1st
+            var resultOfFryEggs = await FryEggs();
+
+            //these 2 methods will execute 2d
+            CookBacon();
+            ToastBread();
+        }
+
+
+        // added a return type
+        private static async Task<bool> FryEggs()
+        {
+            bool result = false;
             await Task.Run(() =>
             {
                 Thread.Sleep(2000); // 2 secs
                 Console.WriteLine("Eggs fried.");
+                result = true;  
             });
+            return result;
         }
 
         private static async void CookBacon()

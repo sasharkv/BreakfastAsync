@@ -27,12 +27,30 @@ namespace BreakfastAsync // Note: actual namespace depends on the project name.
 
         public static async void AnotherAsyncMethod()
         {
-            // this method will execute 1st
-            var resultOfFryEggs = await FryEggs();
+           // this method will execute 1st
+           // var resultOfFryEggs = await FryEggs();
 
-            //these 2 methods will execute 2d
+            // CookBacon (async) and Tester (sync) will start at the same time. They will finish at the same time because they bothe have 2 sec delay.
+            // Then Tester2 (sync) will start.
+            // But ToastBread(async) will have to wait for Tester2 (sync) to complete to be able to start.
             CookBacon();
+            Tester();
+            Tester2();
             ToastBread();
+        }
+
+        public static void Tester()
+        {
+            Console.WriteLine("Test start " + DateTime.Now.TimeOfDay);
+            Thread.Sleep(2000);
+            Console.WriteLine("Test end " + DateTime.Now.TimeOfDay);
+        }
+
+        public static void Tester2()
+        {
+            Console.WriteLine("Test2 start " + DateTime.Now.TimeOfDay);
+            Thread.Sleep(2000);
+            Console.WriteLine("Test2 end " + DateTime.Now.TimeOfDay);
         }
 
 
@@ -42,8 +60,9 @@ namespace BreakfastAsync // Note: actual namespace depends on the project name.
             bool result = false;
             await Task.Run(() =>
             {
+                Console.WriteLine("Eggs start" + DateTime.Now.TimeOfDay);
                 Thread.Sleep(2000); // 2 secs
-                Console.WriteLine("Eggs fried.");
+                Console.WriteLine("Eggs fried. " + DateTime.Now.TimeOfDay);
                 result = true;  
             });
             return result;
@@ -53,9 +72,9 @@ namespace BreakfastAsync // Note: actual namespace depends on the project name.
         {
             await Task.Run(() =>
             {
-
+                Console.WriteLine("Bacon start" + DateTime.Now.TimeOfDay);
                 Thread.Sleep(2000);
-                Console.WriteLine("Bacon cooked.");
+                Console.WriteLine("Bacon cooked. " + DateTime.Now.TimeOfDay);
             });
         }
 
@@ -63,8 +82,9 @@ namespace BreakfastAsync // Note: actual namespace depends on the project name.
         {
             await Task.Run(() =>
             {
+                Console.WriteLine("Bread start" + DateTime.Now.TimeOfDay);
                 Thread.Sleep(2000);
-                Console.WriteLine("Bread toasted.");
+                Console.WriteLine("Bread toasted. " + DateTime.Now.TimeOfDay);
             });
         }
 
